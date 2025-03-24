@@ -1,0 +1,41 @@
+pip install Cython==0.29.21
+cython 版本太高有问题，导致cimport c_region 出错
+
+
+SET PYTHONPATH=E:\\ZZY\\Project\\pyProject\\pysot
+
+python tools/demo.py --config experiments/siamrpn_r50_l234_dwxcorr/config.yaml --snapshot experiments/siamrpn_r50_l234_dwxcorr/model.pth --video demo/bag.avi 
+
+
+siamrpn_alex_dwxcorr                180 
+siamrpn_alex_dwxcorr_otb            180
+siamrpn_r50_l234_dwxcorr            35  
+siamrpn_r50_l234_dwxcorr_otb        35
+siamrpn_mobilev2_l234_dwxcorr       75  
+siammask_r50_l3                     56  
+siamrpn_r50_l234_dwxcorr_lt         20 
+
+python tools/demo.py --config experiments/siamrpn_alex_dwxcorr/config.yaml --snapshot experiments/siamrpn_alex_dwxcorr/model.pth --video demo/bag.avi 
+
+python tools/demo.py --config experiments/siamrpn_alex_dwxcorr_otb/config.yaml --snapshot experiments/siamrpn_alex_dwxcorr_otb/model.pth --video demo/bag.avi 
+
+python tools/demo.py --config experiments/siamrpn_r50_l234_dwxcorr/config.yaml --snapshot experiments/siamrpn_r50_l234_dwxcorr/model.pth --video demo/bag.avi 
+
+python tools/demo.py --config experiments/siamrpn_r50_l234_dwxcorr_otb/config.yaml --snapshot experiments/siamrpn_r50_l234_dwxcorr_otb/model.pth --video demo/bag.avi 
+
+python tools/demo.py --config experiments/siamrpn_mobilev2_l234_dwxcorr/config.yaml --snapshot experiments/siamrpn_mobilev2_l234_dwxcorr/model.pth --video demo/bag.avi 
+
+python tools/demo.py --config experiments/siammask_r50_l3/config.yaml --snapshot experiments/siammask_r50_l3/model.pth --video demo/bag.avi 
+
+python tools/demo.py --config experiments/siamrpn_r50_l234_dwxcorr_lt/config.yaml --snapshot experiments/siamrpn_r50_l234_dwxcorr_lt/model.pth --video demo/bag.avi 
+
+python tools/demo.py --config experiments/siamrpn_r50_l234_dwxcorr/config.yaml --snapshot experiments/siamrpn_r50_l234_dwxcorr_lt/model.pth --video demo/bag.avi 
+
+
+D:\\DJIvideo\\DJI.MP4
+
+python tools/demo.py --config experiments/siamrpn_alex_dwxcorr/config.yaml --snapshot experiments/siamrpn_alex_dwxcorr/model.pth --video D:\\DJIvideo\\DJI0.mp4 
+
+python tools/demo.py --config experiments/siamrpn_alex_dwxcorr_otb/config.yaml --snapshot experiments/siamrpn_alex_dwxcorr_otb/model.pth --video D:\\DJIvideo\\DJI0.mp4
+
+python tools/demo.py --config experiments/siammask_r50_l3/config.yaml --snapshot experiments/siammask_r50_l3/model.pth --video D:\\DJIvideo\\DJI0.mp4

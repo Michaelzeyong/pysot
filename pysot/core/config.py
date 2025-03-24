@@ -184,6 +184,9 @@ __C.BACKBONE.LAYERS_LR = 0.1
 # Switch to train layer
 __C.BACKBONE.TRAIN_EPOCH = 10
 
+# CHANNELS
+__C.BACKBONE.CHANNELS = [512, 1024, 2048]
+
 # ------------------------------------------------------------------------ #
 # Adjust layer options
 # ------------------------------------------------------------------------ #
@@ -197,6 +200,9 @@ __C.ADJUST.KWARGS = CN(new_allowed=True)
 # Adjust layer type
 __C.ADJUST.TYPE = "AdjustAllLayer"
 
+# ADJUST_CHANNEL
+__C.ADJUST.ADJUST_CHANNEL = [128, 256, 512]
+
 # ------------------------------------------------------------------------ #
 # RPN options
 # ------------------------------------------------------------------------ #
@@ -207,6 +213,8 @@ __C.RPN.TYPE = 'MultiRPN'
 
 __C.RPN.KWARGS = CN(new_allowed=True)
 
+
+__C.RPN.WEIGHTED = True
 # ------------------------------------------------------------------------ #
 # mask options
 # ------------------------------------------------------------------------ #

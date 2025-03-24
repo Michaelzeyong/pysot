@@ -37,7 +37,12 @@ class SiamMaskTracker(SiamRPNTracker):
     def _mask_post_processing(self, mask):
         target_mask = (mask > cfg.TRACK.MASK_THERSHOLD)
         target_mask = target_mask.astype(np.uint8)
-        if cv2.__version__[-5] == '4':
+        
+        version = cv2.__version__.split(".")
+        
+        # Modify the method of judging the opencv version.
+        # if cv2.__version__[-5] == '4':
+        if version[0] == '4':
             contours, _ = cv2.findContours(target_mask,
                                            cv2.RETR_EXTERNAL,
                                            cv2.CHAIN_APPROX_NONE)

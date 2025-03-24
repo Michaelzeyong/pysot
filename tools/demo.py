@@ -86,6 +86,7 @@ def main():
                 exit()
             tracker.init(frame, init_rect)
             first_frame = False
+            print('Start tracking...')
         else:
             outputs = tracker.track(frame)
             if 'polygon' in outputs:
@@ -102,7 +103,9 @@ def main():
                               (bbox[0]+bbox[2], bbox[1]+bbox[3]),
                               (0, 255, 0), 3)
             cv2.imshow(video_name, frame)
-            cv2.waitKey(40)
+            key = cv2.waitKey(10)
+            if key == ord('q') or key == 27:
+                break
 
 
 if __name__ == '__main__':
