@@ -88,6 +88,8 @@ class SiamRPNTracker(SiameseTracker):
         z_crop = self.get_subwindow(img, self.center_pos,
                                     cfg.TRACK.EXEMPLAR_SIZE,
                                     s_z, self.channel_average)
+        # print('z_crop: ')
+        # print(z_crop.size()) #torch.Size([1, 3, 127, 127])
         self.model.template(z_crop)
 
     def track(self, img):
@@ -105,9 +107,12 @@ class SiamRPNTracker(SiameseTracker):
         x_crop = self.get_subwindow(img, self.center_pos,
                                     cfg.TRACK.INSTANCE_SIZE,
                                     round(s_x), self.channel_average)
-
+        # print('x_crop: ')
+        # print(x_crop)
+        # print(x_crop.size()) #torch.Size([1, 3, 287, 287])
         outputs = self.model.track(x_crop)
-
+        # print('outputs: ')
+        # print(outputs)
         score = self._convert_score(outputs['cls'])
         pred_bbox = self._convert_bbox(outputs['loc'], self.anchors)
 

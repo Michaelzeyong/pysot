@@ -43,6 +43,22 @@ def xcorr_depthwise(x, kernel):
     channel = kernel.size(1)
     x = x.view(1, batch*channel, x.size(2), x.size(3))
     kernel = kernel.view(batch*channel, 1, kernel.size(2), kernel.size(3))
+    # print(f"batch: {batch}, channel: {channel}") # batch: 1, channel: 256
+    # print(f"batch   : {kernel[:,0,0,0].numel()}")
+    # print(f"channel : {kernel[0,:,0,0].numel()}")
     out = F.conv2d(x, kernel, groups=batch*channel)
+    # print(f"x: {x}")
+    # print(f"kernel: {kernel}")
     out = out.view(batch, channel, out.size(2), out.size(3))
+
+    # this can avoid TracerWarning: Converting a tensor to a Python integer might cause the trace to be incorrect.
+    # but useless
+    # out = F.conv2d( x.view(1, kernel[:,0,0,0].numel()*kernel[0,:,0,0].numel(), x[0,0,:,0].numel(), x[0,0,0,:].numel()), 
+    #                 kernel.view(kernel[:,0,0,0].numel()*kernel[0,:,0,0].numel(), 1, kernel[0,0,:,0].numel(), kernel[0,0,0,:].numel()), 
+    #                 groups=256)
+    # # print(f"x: {x}")
+    # # print(f"kernel: {kernel}")
+    # out = out.view(kernel[:,0,0,0].numel(), kernel[0,:,0,0].numel(), out[0,0,:,0].numel(), out[0,0,0,:].numel())
+
+
     return out

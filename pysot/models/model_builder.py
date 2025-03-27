@@ -55,7 +55,13 @@ class ModelBuilder(nn.Module):
             xf = xf[-1]
         if cfg.ADJUST.ADJUST:
             xf = self.neck(xf)
+        # print(f"zf shape: {self.zf.shape}") #z_f shape: torch.Size([1, 256, 6, 6])
+        # print(f"xf shape: {xf.shape}") #x_f shape: torch.Size([1, 256, 26, 26])
         cls, loc = self.rpn_head(self.zf, xf)
+        # print(f"cls:  {cls}")
+        # print(f"loc:  {loc}")
+        # print(f"cls shape:  {cls.shape}") # torch.Size([1, 10, 21, 21])
+        # print(f"loc shape:  {loc.shape}") # torch.Size([1, 20, 21, 21])
         if cfg.MASK.MASK:
             mask, self.mask_corr_feature = self.mask_head(self.zf, xf)
         return {

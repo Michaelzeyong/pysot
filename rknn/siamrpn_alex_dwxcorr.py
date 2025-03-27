@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 
 import os
 import argparse
+from xdrlib import ConversionError
 
 import cv2
 import torch
@@ -16,8 +17,9 @@ from pysot.models.model_builder import ModelBuilder
 from pysot.tracker.tracker_builder import build_tracker
 
 import time
+from rknnSiamrpn_tracker import RKNNSiamRPNTracker
 
-torch.set_num_threads(8)
+torch.set_num_threads(1)
 
 parser = argparse.ArgumentParser(description='tracking demo')
 parser.add_argument('--config', type=str, help='config file')
@@ -56,10 +58,8 @@ def get_frames(video_name):
             frame = cv2.imread(img)
             yield frame
 
-
-def main():
-    # load config
-    cfg.merge_from_file(args.config)
+def exportPt():
+    print("--------------------Export *.pt--------------------")
     cfg.CUDA = torch.cuda.is_available() and cfg.CUDA
     device = torch.device('cuda' if cfg.CUDA else 'cpu')
 
@@ -71,8 +71,68 @@ def main():
         map_location=lambda storage, loc: storage.cpu()))
     model.eval().to(device)
 
-    # build tracker
-    tracker = build_tracker(model)
+    # EXEMPLAR_SIZE: 127
+    # INSTANCE_SIZE: 287
+
+    modelExemplarName = './rknn/modelExemplar127.pt'
+    if not os.path.exists(modelExemplarName):   
+        modelExemplar = torch.jit.trace(model.backbone,torch.Tensor(1,3,127,127))
+        modelExemplar.save(modelExemplarName)
+        print('save to %s' %modelExemplarName)
+    else:
+        print(f"Already have {modelExemplarName}")
+
+    modelInstanceName = './rknn/modelInstance287.pt'
+    if not os.path.exists(modelInstanceName): 
+        modelInstance = torch.jit.trace(model.backbone,torch.Tensor(1,3,287,287))
+        modelInstance.save(modelInstanceName)
+        print('save to %s' %modelInstanceName)
+    else:
+        print(f"Already have {modelInstanceName}")
+
+    # z_f shape: torch.Size([1, 256, 6, 6])
+    # x_f shape: torch.Size([1, 256, 26, 26])
+
+    # Use torch.jit.trace may have some problem
+    # TracerWarning: Converting a tensor to a Python integer might cause the trace to be incorrect. 
+    # We can't record the data flow of Python values, 
+    # so this value will be treated as a constant in the future. 
+    # This means that the trace might not generalize to other inputs!
+    # out = F.conv2d(x, kernel, groups=batch*channel)
+
+    modelHeadNameTrace = './rknn/modelHeadTrace.pt'
+    if not os.path.exists(modelHeadNameTrace): 
+        modelHead = torch.jit.trace(model.rpn_head, (torch.Tensor(1, 256, 6, 6), torch.Tensor(1, 256, 26, 26)))
+        modelHead.save(modelHeadNameTrace)
+        print('save to %s' %modelHeadNameTrace)
+    else:
+        print(f"Already have {modelHeadNameTrace}")
+    
+    # Use torch.jit.script
+    modelHeadNameScript = './rknn/modelHeadscript.pt'
+    if not os.path.exists(modelHeadNameScript):
+        with torch.jit.optimized_execution(True): 
+            modelHead = torch.jit.script(model.rpn_head, (torch.Tensor(1, 256, 6, 6), torch.Tensor(1, 256, 26, 26)))
+            modelHead.save(modelHeadNameScript)
+            print('save to %s' %modelHeadNameScript)
+    else:
+        print(f"Already have {modelHeadNameScript}")
+
+
+    # print(model)
+    print('Load Model Done')
+    print("--------------------Export *.pt Done!--------------------")
+
+
+def main():
+    # load config
+    cfg.merge_from_file(args.config)
+
+    # export *.pt file
+    exportPt()
+    tracker = RKNNSiamRPNTracker()
+    tracker.exportRKNN()
+    tracker.initRKNN()
 
     first_frame = True
     if args.video_name:
@@ -96,7 +156,7 @@ def main():
             print('Start tracking...')
         else:
             outputs = tracker.track(frame)
-            # print(outputs)
+            print(outputs)
             
             if index==0:
                 timestampStart = time.time()
@@ -127,6 +187,41 @@ def main():
                 break
 
             index+=1
+    
+    tracker.releaseRKNN()
+    
+
+    
+
+    
+
+    # tracker = RKNNSiamRPNTracker()
+    # tracker.init(frameOri, init_rect)
+
+
+    # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    # frame = cv2.resize(frame,(287,287))
+    # frame = np.expand_dims(frame, 0)
+
+    
+
+
+    
+
+    # outputs = tracker.track(outputsHead)
+    # print(outputs)
+    # bbox = list(map(int, outputs['bbox']))
+    # cv2.rectangle(frameOri, (bbox[0], bbox[1]),
+    #                 (bbox[0]+bbox[2], bbox[1]+bbox[3]),
+    #                 (0, 255, 0), 3)
+    # cv2.imshow("video_name", frameOri)
+    # key = cv2.waitKey(0)
+
+
+
+    
+
+    print('done')
 
 
 if __name__ == '__main__':

@@ -4,10 +4,10 @@
 {
     "distutils": {
         "depends": [
-            "toolkit\\utils\\src\\region.h"
+            "toolkit/utils/src/region.h"
         ],
         "include_dirs": [
-            ".\\toolkit\\utils",
+            "./toolkit/utils",
             "toolkit/utils/src"
         ],
         "name": "toolkit.utils.region",
@@ -837,7 +837,7 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "toolkit\\utils\\region.pyx",
+  "toolkit/utils/region.pyx",
   "stringsource",
 };
 
@@ -1602,7 +1602,7 @@ static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static const char __pyx_k_Pyx_EnumBase___repr[] = "__Pyx_EnumBase.__repr__";
 static const char __pyx_k_Unknown_enum_value_s[] = "Unknown enum value: '%s'";
 static const char __pyx_k_toolkit_utils_region[] = "toolkit.utils.region";
-static const char __pyx_k_toolkit_utils_region_pyx[] = "toolkit\\utils\\region.pyx";
+static const char __pyx_k_toolkit_utils_region_pyx[] = "toolkit/utils/region.pyx";
 static const char __pyx_k_pyx_unpickle___Pyx_EnumMeta[] = "__pyx_unpickle___Pyx_EnumMeta";
 static const char __pyx_k_x_3f_y_3f_width_3f_height_3f[] = "x: {:.3f} y: {:.3f} width: {:.3f} height: {:.3f}";
 static const char __pyx_k_author_fangyi_zhang_vipl_ict_ac[] = "\n    @author fangyi.zhang@vipl.ict.ac.cn\n";

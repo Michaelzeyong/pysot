@@ -105,3 +105,9 @@ venv.bak/
 
 testing_dataset/*
 experiments
+
+*.onnx
+
+*.pt
+
+*.rknn

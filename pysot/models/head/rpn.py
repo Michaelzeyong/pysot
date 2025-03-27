@@ -87,6 +87,8 @@ class DepthwiseRPN(RPN):
         self.loc = DepthwiseXCorr(in_channels, out_channels, 4 * anchor_num)
 
     def forward(self, z_f, x_f):
+        # print(f"z_f shape: {z_f.shape}") #z_f shape: torch.Size([1, 256, 6, 6])
+        # print(f"x_f shape: {x_f.shape}") #x_f shape: torch.Size([1, 256, 26, 26])
         cls = self.cls(z_f, x_f)
         loc = self.loc(z_f, x_f)
         return cls, loc

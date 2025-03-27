@@ -1,12 +1,15 @@
 pip install Cython==0.29.21
 cython 版本太高有问题，导致cimport c_region 出错
 
-
+windows:
 SET PYTHONPATH=E:\\ZZY\\Project\\pyProject\\pysot
+
+ubuntu
+export PYTHONPATH=/media/wyh/Software/ZZY/Project/pyProject/pysot
 
 python tools/demo.py --config experiments/siamrpn_r50_l234_dwxcorr/config.yaml --snapshot experiments/siamrpn_r50_l234_dwxcorr/model.pth --video demo/bag.avi 
 
-
+neme                                FPS
 siamrpn_alex_dwxcorr                180 
 siamrpn_alex_dwxcorr_otb            180
 siamrpn_r50_l234_dwxcorr            35  
@@ -39,3 +42,10 @@ python tools/demo.py --config experiments/siamrpn_alex_dwxcorr/config.yaml --sna
 python tools/demo.py --config experiments/siamrpn_alex_dwxcorr_otb/config.yaml --snapshot experiments/siamrpn_alex_dwxcorr_otb/model.pth --video D:\\DJIvideo\\DJI0.mp4
 
 python tools/demo.py --config experiments/siammask_r50_l3/config.yaml --snapshot experiments/siammask_r50_l3/model.pth --video D:\\DJIvideo\\DJI0.mp4
+
+
+/media/wyh/Document/DJIvideo/DJI0.mp4 
+
+python tools/demo.py --config experiments/siamrpn_alex_dwxcorr/config.yaml --snapshot experiments/siamrpn_alex_dwxcorr/model.pth --video /media/wyh/Document/DJIvideo/DJI0.mp4 
+
+python tools/demo.py --config experiments/siamrpn_r50_l234_dwxcorr_otb/config.yaml --snapshot experiments/siamrpn_r50_l234_dwxcorr_otb/model.pth --video /media/wyh/Document/DJIvideo/DJI0.mp4 

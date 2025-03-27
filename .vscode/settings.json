@@ -8,4 +8,8 @@
     "terminal.integrated.env.windows": {
         "PYTHONPATH": "${workspaceFolder}",
     },
+    "ros.distro": "melodic",
+    "python.analysis.extraPaths": [
+        "./rknn"
+    ],
 }
