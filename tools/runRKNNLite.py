@@ -4,28 +4,27 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import os
+import time
 import argparse
 
 import cv2
-import torch
 import numpy as np
 from glob import glob
 
+import sys
+
+sys.path.append(os.getcwd())
+
 from pysot.core.config import cfg
-from pysot.models.model_builder import ModelBuilder
-from pysot.tracker.tracker_builder import build_tracker
 
-import time
-
-torch.set_num_threads(8)
+from rknnLiteSiamrpn_tracker import RKNNLiteSiamRPNTracker
 
 parser = argparse.ArgumentParser(description='tracking demo')
-parser.add_argument('--config', type=str, help='config file')
-parser.add_argument('--snapshot', type=str, help='model name')
-parser.add_argument('--video_name', default='', type=str,
-                    help='videos or image files')
-args = parser.parse_args()
 
+parser.add_argument('--config', default='./experiments/siamrpn_alex_dwxcorr/config.yaml', type=str, help='config file')
+parser.add_argument('--video_name', default='./demo/bag.avi', type=str, help='config file')
+
+args = parser.parse_args()
 
 def get_frames(video_name):
     if not video_name:
@@ -39,9 +38,16 @@ def get_frames(video_name):
                 yield frame
             else:
                 break
+
     elif video_name.endswith('avi') or \
-        video_name.endswith('mp4'):
-        cap = cv2.VideoCapture(args.video_name)
+            video_name.endswith('mp4') or \
+            video_name.endswith('mov'):
+        cap = cv2.VideoCapture(video_name)
+
+        # warmup
+        for i in range(50):
+            cap.read()
+
         while True:
             ret, frame = cap.read()
             if ret:
@@ -60,20 +66,16 @@ def get_frames(video_name):
 def main():
     # load config
     cfg.merge_from_file(args.config)
-    cfg.CUDA = torch.cuda.is_available() and cfg.CUDA
-    device = torch.device('cuda' if cfg.CUDA else 'cpu')
 
-    # create model
-    model = ModelBuilder()
+    # load_weight
 
-    # load model
-    model.load_state_dict(torch.load(args.snapshot,
-        map_location=lambda storage, loc: storage.cpu()))
-    print(device)
-    model.eval().to(device)
+    modelExemplarRknnName = './rknn/modelExemplar127.rknn'
+    modelInstanceRknnName = './rknn/modelInstance287.rknn'
+    modelHeadNameTraceRknnName = './rknn/modelHeadNameTrace.rknn'
 
-    # build tracker
-    tracker = build_tracker(model)
+    
+    tracker = RKNNLiteSiamRPNTracker(modelExemplarRknnName, modelInstanceRknnName, modelHeadNameTraceRknnName)
+
 
     first_frame = True
     if args.video_name:
@@ -128,6 +130,8 @@ def main():
                 break
 
             index+=1
+    
+    tracker.releaseRKNN()
 
 
 if __name__ == '__main__':
