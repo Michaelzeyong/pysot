@@ -125,7 +125,7 @@ z_f is the output of **backbone of exemplar**, x_f is the output of **backbone o
   
 ## RUN the demo on RK3588
 Install rknn-toolkit-lite2 on your rk device, I run the demo on RK3588.  
-Copy file on the projict to your rk device, and your need to maintain the structure of the project.
+Copy folders and files on the projict to your rk device, and your need to maintain the structure of the project.
 >pysot_rknn(root path)
 >>demo/  
 >>tools/  
