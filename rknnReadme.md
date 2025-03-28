@@ -48,3 +48,5 @@ Copy folders and files on the projict to your rk device, and your need to mainta
 ```
 python tools/runRKNNLite.py
 ```
+The mode inference speed on rk3588 is about 10 FPS.
+
