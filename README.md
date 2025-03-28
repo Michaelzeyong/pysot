@@ -142,12 +142,17 @@ If you meet problem, try searching our GitHub issues first. We intend the issues
 
 - `ModuleNotFoundError: No module named 'pysot'`
 
-:dart:Solution: Run `export PYTHONPATH=path/to/pysot` first before you run the code.
+:dart:Solution: Run `export PYTHONPATH=path/to/pysot` first before you run the code. <br/><br/>
+:dart:Solution: if you just want run the demo on WINDOWS, Run `SET PYTHONPATH=path\\pyProject\\pysot` <br/><br/>
+:dart:Solution: If you use vscode you can see the .vscode/settings.json  <br/><br/>
 
 - `ImportError: cannot import name region`
 
-:dart:Solution: Build `region` by `python setup.py build_ext —-inplace` as decribled in [INSTALL.md](INSTALL.md).
+:dart:Solution: Build `region` by `python setup.py build_ext —-inplace` as decribled in [INSTALL.md](INSTALL.md).  <br/><br/>
 
+- `Some problem about cython`
+
+:dart:Solution: `pip install Cython==0.29.21`. 
 
 ## References
 
