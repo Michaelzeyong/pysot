@@ -1,4 +1,4 @@
-try convert to rknn
+Convert to rknn and test on ubuntu(x86-64 amd64)
 
 siamrpn_alex_dwxcorr.py is used to export rknn and test tknn model on Ubuntu
 
@@ -21,3 +21,7 @@ rpn head output
 output[[cls],[loc]]
 #cls np shape  : (1, 10, 21, 21) 
 #loc np shape  : (1, 20, 21, 21) 
+
+
+RUN on rk3588
+python tools/runRKNNLite.py
