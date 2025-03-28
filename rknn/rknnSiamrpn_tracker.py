@@ -208,12 +208,12 @@ class RKNNSiamRPNTracker(SiameseTracker):
 
         back_X_in = x_crop.transpose((0,2,3,1))
         # Inference InstanceName input the img
-        print('--> Running model Instance')
+        # print('--> Running model Instance')
         # outputsInstance = self.rknnInstance.inference(inputs=[frame], data_format=['nhwc'])
         outputsInstance = self.rknnInstance.inference(inputs=[back_X_in], data_format=['nhwc'])
-        print(f"output len: {len(outputsInstance)}")
-        print(f"np shape  : {np.array(outputsInstance).shape}")
-        print('Inference Instance done')
+        # print(f"output len: {len(outputsInstance)}")
+        # print(f"np shape  : {np.array(outputsInstance).shape}")
+        # print('Inference Instance done')
 
         head_T_in = self.outputsExemplar[0].transpose((0,2,3,1))
         head_X_in = outputsInstance[0].transpose((0,2,3,1))
@@ -221,13 +221,13 @@ class RKNNSiamRPNTracker(SiameseTracker):
         
 
         # Inference Head
-        print('--> Running model Head')
+        # print('--> Running model Head')
         outputsHead = self.rknnHeadTrace.inference(inputs=[head_T_in,head_X_in])
         # print(outputsHead)
-        print(f"output len: {len(outputsHead)}")
-        print(f"np shape  : {outputsHead[0].shape}") #np shape  : (1, 10, 21, 21) cls
-        print(f"np shape  : {outputsHead[1].shape}") #np shape  : (1, 20, 21, 21) loc
-        print('Inference Head done')
+        # print(f"output len: {len(outputsHead)}")
+        # print(f"np shape  : {outputsHead[0].shape}") #np shape  : (1, 10, 21, 21) cls
+        # print(f"np shape  : {outputsHead[1].shape}") #np shape  : (1, 20, 21, 21) loc
+        # print('Inference Head done')
 
 
         score = self._convert_score(torch.tensor(outputsHead[0]))
@@ -299,28 +299,30 @@ class RKNNSiamRPNTracker(SiameseTracker):
         self.rknnExemplar = RKNN(verbose=True)
 
         # Pre-process config
-        print('--> Config model')
-        self.rknnExemplar.config(mean_values=[0, 0, 0], std_values=[1, 1, 1], target_platform='rk3588')
-        print('done')
+        print('--> Config Exemplar model')
+        # self.rknnExemplar.config(mean_values=[0, 0, 0], std_values=[1, 1, 1], target_platform='rk3588')
+        self.rknnExemplar.config(mean_values=[0, 0, 0], std_values=[1, 1, 1], target_platform='rk3588',quantized_dtype='w8a8')
+        print('Config Exemplar model done')
 
         # Load model
-        print('--> Loading model')
+        print('--> Loading Exemplar model')
         ret = self.rknnExemplar.load_pytorch(model=modelExemplarName, input_size_list=input_size_list)
         if ret != 0:
             print('Load model failed!')
             exit(ret)
-        print('done')
+        print('Loading Exemplar model done')
 
         # Build model
-        print('--> Building model')
-        ret = self.rknnExemplar.build(do_quantization=False)
+        print('--> Building Exemplar model')
+        # ret = self.rknnExemplar.build(do_quantization=False)
+        ret = self.rknnExemplar.build(do_quantization=True,dataset='./rknn/dataset.txt')
         if ret != 0:
             print('Build model failed!')
             exit(ret)
-        print('done')
+        print('Building Exemplar model done')
 
         # Export rknn model
-        print('--> Export rknn model')
+        print('--> Export Exemplar rknn model')
         ret = self.rknnExemplar.export_rknn(modelExemplarRknnName)
         if ret != 0:
             print('Export rknn model failed!')
@@ -337,28 +339,30 @@ class RKNNSiamRPNTracker(SiameseTracker):
         self.rknnInstance = RKNN(verbose=True)
 
         # Pre-process config
-        print('--> Config model')
-        self.rknnInstance.config(mean_values=[0, 0, 0], std_values=[1, 1, 1], target_platform='rk3588')
-        print('done')
+        print('--> Config Instance model')
+        # self.rknnInstance.config(mean_values=[0, 0, 0], std_values=[1, 1, 1], target_platform='rk3588')
+        self.rknnInstance.config(mean_values=[0, 0, 0], std_values=[1, 1, 1], target_platform='rk3588',quantized_dtype='w8a8')
+        print('Config Instance model done')
 
         # Load model
-        print('--> Loading model')
+        print('--> Loading Instance model')
         ret = self.rknnInstance.load_pytorch(model=modelInstanceName, input_size_list=input_size_list)
         if ret != 0:
             print('Load model failed!')
             exit(ret)
-        print('done')
+        print('Loading Instance model done')
 
         # Build model
-        print('--> Building model')
-        ret = self.rknnInstance.build(do_quantization=False)
+        print('--> Building Instance model')
+        # ret = self.rknnInstance.build(do_quantization=False)
+        ret = self.rknnInstance.build(do_quantization=True,dataset='./rknn/dataset.txt')
         if ret != 0:
             print('Build model failed!')
             exit(ret)
-        print('done')
+        print('Building Instance model done')
 
         # Export rknn model
-        print('--> Export rknn model')
+        print('--> Export Instance rknn model')
         ret = self.rknnInstance.export_rknn(modelInstanceRknnName)
         if ret != 0:
             print('Export rknn model failed!')
@@ -375,28 +379,28 @@ class RKNNSiamRPNTracker(SiameseTracker):
         self.rknnHeadTrace = RKNN(verbose=True)
 
         # Pre-process config
-        print('--> Config model')
+        print('--> Config Head model')
         self.rknnHeadTrace.config(mean_values=[0]*256, std_values=[1]*256, target_platform='rk3588')
-        print('done')
+        print('Config Head model done')
 
         # Load model
-        print('--> Loading model')
+        print('--> Loading Head model')
         ret = self.rknnHeadTrace.load_pytorch(model=modelHeadNameTrace, input_size_list=input_size_list)
         if ret != 0:
             print('Load model failed!')
             exit(ret)
-        print('done')
+        print('Loading Head model done')
 
         # Build model
-        print('--> Building model')
+        print('--> Building Head model')
         ret = self.rknnHeadTrace.build(do_quantization=False)
         if ret != 0:
             print('Build model failed!')
             exit(ret)
-        print('done')
+        print('Building Head model done')
 
         # Export rknn model
-        print('--> Export rknn model')
+        print('--> Export rknn Head model')
         ret = self.rknnHeadTrace.export_rknn(modelHeadNameTraceRknnName)
         if ret != 0:
             print('Export rknn model failed!')
@@ -427,7 +431,7 @@ class RKNNSiamRPNTracker(SiameseTracker):
 
         # # Build model
         # print('--> Building model')
-        # ret = rknnHeadNameScript.build(do_quantization=False)
+        # ret = rknnHeadNameScript.build(do_quantization=True)
         # if ret != 0:
         #     print('Build model failed!')
         #     exit(ret)
