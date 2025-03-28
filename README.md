@@ -99,6 +99,15 @@ If you meet problem, try searching our GitHub issues first. We intend the issues
 
 :dart:Solution: Build `region` by `python setup.py build_ext —-inplace` as decribled in [INSTALL.md](INSTALL.md).
 
+## Conver to RKNN
+See [rknnReadme.md](rknnReadme.md)
+
+### Installation
+
+you need to download [rknn-tookit2](https://github.com/airockchip/rknn-toolkit2),and install rknn-tookit2 on your ubuntu(x86-64)
+
+## export rknn
+
 
 ## References
 
