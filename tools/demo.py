@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 
 import os
 import argparse
+from sqlite3 import Timestamp
 
 import cv2
 import torch
@@ -83,9 +84,7 @@ def main():
     cv2.namedWindow(video_name, cv2.WND_PROP_FULLSCREEN)
 
     # calculate time 
-    index = 0
-    timestampStart = time.time();
-    timestampEnd = time.time();
+    timeList = []
     for frame in get_frames(args.video_name):
         if first_frame:
             try:
@@ -96,19 +95,13 @@ def main():
             first_frame = False
             print('Start tracking...')
         else:
+            timeStart = time.time()
             outputs = tracker.track(frame)
+            timeList.append(time.time() - timeStart)
+            if len(timeList)==10:
+                print(f"avg time: {sum(timeList)/10} FPS: {10/sum(timeList)}")
+                timeList.clear()
             # print(outputs)
-            
-            if index==0:
-                timestampStart = time.time()
-            if index ==10:
-                timestampEnd = time.time()
-                FPS = 10/(timestampEnd- timestampStart)
-                print("FPS: %.2f" %FPS)
-                index = 0
-                timestampStart = time.time()
-            
-
             if 'polygon' in outputs:
                 polygon = np.array(outputs['polygon']).astype(np.int32)
                 cv2.polylines(frame, [polygon.reshape((-1, 1, 2))],
@@ -127,7 +120,7 @@ def main():
             if key == ord('q') or key == 27:
                 break
 
-            index+=1
+            
 
 
 if __name__ == '__main__':
